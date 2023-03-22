@@ -2,8 +2,8 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse('Главная страница')
+    return HttpResponse('Приветствую тебя, искательприключений!')
 
 
-def group_posts(request, pk):
-    return HttpResponse('Ваш пост {pk}'.format(pk=pk))
+def group_posts(request, slug):
+    return HttpResponse('Ваш пост {slug}')
