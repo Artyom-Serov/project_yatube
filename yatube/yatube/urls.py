@@ -20,6 +20,6 @@ urlpatterns = [
     # Если на сервер приходит любой запрос (''),
     # перейти в файл urls приложения posts
     # и проверить там все path() на совпадение с запршенным URL
-    path('', include('posts.urls')),
+    path('', include('posts.urls', namespace='posts')),
     path('admin/', admin.site.urls),
 ]
