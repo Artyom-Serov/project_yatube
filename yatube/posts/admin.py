@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-# Из модуля models импортируем модель Post
+# Из модуля models импортируем моделb Post, Group
 from .models import Post, Group
 
 
 class PostAdmin(admin.ModelAdmin):
-    # Перечисляем поля, которые должны отображаться в админке
+    """Модель админки."""
     list_display = (
         'pk',
         'text',
@@ -13,16 +13,18 @@ class PostAdmin(admin.ModelAdmin):
         'author',
         'group',
     )
-    # Возможность изменять поле group в любом посте
+    # Перечисляем поля, которые должны отображаться в админке
     list_editable = ('group',)
-    # Интерфейс для поиска по тексту постов
+    # Возможность изменять поле group в любом посте
     search_fields = ('text',)
-    # Возможность фильтрации по дате
+    # Интерфейс для поиска по тексту постов
     list_filter = ('pub_date',)
-    # Свойство отображения пустых колонок
+    # Возможность фильтрации по дате
     empty_value_display = '-пусто-'
+    # Свойство отображения пустых колонок
 
 
 # При регистрации модели Post источником конфигурации для неё назначаем
 # класс PostAdmin
-admin.site.register(Post, Group, PostAdmin)
+admin.site.register(Post, PostAdmin)
+admin.site.register(Group)
