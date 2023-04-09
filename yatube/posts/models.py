@@ -24,11 +24,6 @@ class Group(models.Model):
     # Tекст, описывающий сообщество
 
     class Meta:
-<<<<<<< HEAD
-        ordering = ('title',)
-        verbose_name = 'Группа'
-        verbose_name_plural = 'Группы'
-=======
         ordering = ['title', ]
         # Параметр сортировки отображения по умолчанию
         # по полю *title*
@@ -37,7 +32,6 @@ class Group(models.Model):
         verbose_name_plural = 'Группы'
         # Параметр для отображения поля на русском языке,
         # если поле во множественном числе
->>>>>>> 22378ad (Add application users)
 
     def __str__(self):
         return self.title
@@ -64,21 +58,6 @@ class Post(models.Model):
         null=True,
         related_name='posts'
     )
-<<<<<<< HEAD
-    # Поле для хранения автора, со ссылкой на модель User.
-    # араметр *on_delete=models.CASCADE* обеспечивает
-    # связность данных: если из таблицы User будет удалён пользователь,
-    # то будут удалены все связанные с ним посты.
-    group = models.ForeignKey(
-        Group,
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True
-    )
-
-    class Meta:
-        ordering = ('text',)
-=======
     # Поле для хранения группы, со ссылкой на модель Group.
     # параметр *on_delete=models.SET_NULL* обеспечивает
     # связность данных: если из таблицы Group будет удалена группа,
@@ -86,6 +65,5 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-pub_date', ]
->>>>>>> 22378ad (Add application users)
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'

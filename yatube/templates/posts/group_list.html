@@ -9,26 +9,13 @@
       {{ group.description|linebreaks }}
     </p>
     {% for post in posts %}
-<<<<<<< HEAD
-      <ul>
-        <li>
-          Автор: {{ post.author.get_full_name }}
-        </li>
-        <li>
-          Дата публикации: {{ post.pub_date|date:"d M Y" }}
-        </li>
-      </ul> 
-      <p>{{ post.text }}
-      </p>
-=======
       {% include 'posts/posts_view.html' %}
->>>>>>> 22378ad (Add application users)
       {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
 {% endblock %}
 {% block footer %}
 <footer class="page-footer font-small blue border-top">
-  <div class="footer-copyright text-center py-3">© 2020 Copyright 
+  <div class="footer-copyright text-center py-3">© 2023 Copyright 
     <p><span style="color:red">Ya</span>tube</p> 
   </div>    
 </footer>
