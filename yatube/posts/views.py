@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 # Импортируем модель, чтобы обратиться к ней
 from .models import Post, Group
@@ -11,10 +12,15 @@ def index(request):
     template = 'posts/index.html'
     # В переменную posts будет сохранена выборка из 10 объектов модели Post,
     # отсортированных по ordering в классе Meta
-    posts = Post.objects.all()[:DISPLAY]
-    # В словаре context отправляем информацию в шаблон
+    posts = Post.objects.all()[:]
+    paginator = Paginator(posts, DISPLAY)
+    # Из URL извлекаем номер запрошенной страницы - это значение параметра page
+    page_number = request.GET.get('page')
+    # Получаем набор записей для страницы с запрошенным номером
+    page_obj = paginator.get_page(page_number)
+    # Отдаем в словаре контекста lkz отправки информации в шаблон
     context = {
-        'posts': posts,
+        'page_obj': page_obj,
     }
     return render(request, template, context)
 
