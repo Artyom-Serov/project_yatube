@@ -5,6 +5,38 @@ User = get_user_model()
 """Обращаемся к модели User через функцию get_user_model."""
 
 
+class Post(models.Model):
+    """Модель постов."""
+    text = models.TextField()
+    # Поле для хранения произвольного текста
+    pub_date = models.DateTimeField(auto_now_add=True)
+    # Поле для хранения даты и времени
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    # Поле для хранения автора, со ссылкой на модель User.
+    # параметр *on_delete=models.CASCADE* обеспечивает
+    # связность данных: если из таблицы User будет удалён пользователь,
+    # то будут удалены все связанные с ним посты.
+    group = models.ForeignKey(
+        'Group',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='posts'
+    )
+    # Поле для хранения группы, со ссылкой на модель Group.
+    # параметр *on_delete=models.SET_NULL* обеспечивает
+    # связность данных: если из таблицы Group будет удалена группа,
+    # то в поле ссылки на группу будет значение NULL.
+
+    class Meta:
+        ordering = ['-pub_date', ]
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
+
+
 class Group(models.Model):
     """Модель групп."""
     title = models.CharField(
@@ -35,35 +67,3 @@ class Group(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class Post(models.Model):
-    """Модель постов."""
-    text = models.TextField()
-    # Поле для хранения произвольного текста
-    pub_date = models.DateTimeField(auto_now_add=True)
-    # Поле для хранения даты и времени
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-    )
-    # Поле для хранения автора, со ссылкой на модель User.
-    # параметр *on_delete=models.CASCADE* обеспечивает
-    # связность данных: если из таблицы User будет удалён пользователь,
-    # то будут удалены все связанные с ним посты.
-    group = models.ForeignKey(
-        Group,
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-        related_name='posts'
-    )
-    # Поле для хранения группы, со ссылкой на модель Group.
-    # параметр *on_delete=models.SET_NULL* обеспечивает
-    # связность данных: если из таблицы Group будет удалена группа,
-    # то в поле ссылки на группу будет значение NULL.
-
-    class Meta:
-        ordering = ['-pub_date', ]
-        verbose_name = 'Пост'
-        verbose_name_plural = 'Посты'

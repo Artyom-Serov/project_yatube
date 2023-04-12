@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Об авторе проекта{% endblock %}
+{% block content %}
+{% load static %}
+<div class="col-md-auto">
+  <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+    <div class="col p-4 d-flex flex-column position-static">
+      <strong class="d-inline-block mb-2 text-primary"><h2>Привет, я автор</h2></strong>
+      <div class="mb-1 text-body-secondary"> На дворе {{ year }} год </div>
+      <p class="card-text mb-auto">Я живу в одном из источников нефтегазодобывающей отрасли - в городе Сургуте.
+        Уже 15 лет занимаюсь строительством в нефтегазовой отрасли. 
+        Программирование интересовало меня давно, но отпугивала мысль о постоянной мало мобильной работе сидя 
+        за компьютером. Поработав по профилю полученного высшего образования в строительстве я столкнулся с тем, 
+        что большая часть работы выполняется так же как у программистов - сидя за компьютером. 
+        Так я принял решение попробовать себя в том, что всегда было интересно - в программировании.
+        <p>Чем открыл для себя ворота в насыщенную новой информацией среду.</p> 
+      </p>
+      <a href="{%static 'img/5.png' %}" class="stretched-link">Найду ли я выход?</a>
+    </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
