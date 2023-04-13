@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 # Импортируем модель, чтобы обратиться к ней
-from .models import Post, Group
+from .models import Post, Group, User
 
 DISPLAY = 10
 # Количество отображаемых постов
@@ -41,3 +41,26 @@ def group_posts(request, slug):
         'posts': posts,
     }
     return render(request, template, context)
+
+
+def profile(request, username):
+    # Здесь код запроса к модели и создание словаря контекста
+    author = get_object_or_404(User, username=username)
+    post_list = author.posts.all()
+    paginator = Paginator(post_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {
+        'author': author,
+        'page_obj': page_obj,
+    }
+    return render(request, 'posts/profile.html', context)
+
+
+def post_detail(request, post_id):
+    # Здесь код запроса к модели и создание словаря контекста
+    post = get_object_or_404(Post, id=post_id)
+    context = {
+        'post': post,
+    }
+    return render(request, 'posts/post_detail.html', context)
