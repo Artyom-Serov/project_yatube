@@ -29,18 +29,19 @@ def index(request):
 
 def group_posts(request, slug):
     template = 'posts/group_list.html'
-    # Функция get_object_or_404 получает по заданным критериям объект
-    # из базы данных или возвращает сообщение об ошибке, если объект не найден.
-    # В нашем случае в переменную group будут переданы объекты модели Group,
-    # поле slug у которых соответствует значению slug в запросе
     group = get_object_or_404(Group, slug=slug)
-    # Метод .filter позволяет ограничить поиск по критериям.
-    # Это аналог добавления
-    # условия WHERE group_id = {group_id}
-    posts = group.posts.all()[:DISPLAY]
+    posts = group.posts.all()
+    # создаем объект пагинатора, указывая количество элементов на странице
+    paginator = Paginator(posts, DISPLAY)
+    # получаем номер страницы из GET-параметра, либо используем 1
+    page_number = request.GET.get('page', 1)
+    # получаем объект страницы
+    page_obj = paginator.get_page(page_number)
     context = {
         'group': group,
-        'posts': posts,
+        'posts': page_obj,
+        'page_obj': page_obj,
+        'paginator': paginator,
     }
     return render(request, template, context)
 
