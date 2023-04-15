@@ -1,7 +1,9 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 # Импортируем модель, чтобы обратиться к ней
 from .models import Post, Group, User
+from .forms import PostForm
 
 DISPLAY = 10
 # Количество отображаемых постов
@@ -64,3 +66,17 @@ def post_detail(request, post_id):
         'post': post,
     }
     return render(request, 'posts/post_detail.html', context)
+
+
+@login_required
+def post_create(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('profile', username=request.user.username)
+    else:
+        form = PostForm()
+    return render(request, 'posts/create_post.html', {'form': form})

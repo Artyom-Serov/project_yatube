@@ -1,77 +1,30 @@
-<!DOCTYPE html>
-<html lang="ru">
-  <head>
-    {% load static %}
-    <meta charset="utf-8"> <!-- Кодировка сайта -->
-    <!-- Сайт готов работать с мобильными устройствами -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Загружаем фав-иконки -->
-    <link rel="icon" href="{%static 'img/fav/fav.ico" type="image' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{%static 'img/fav/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{%static 'img/fav/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{%static 'img/fav/favicon-16x16.png' %}">
-    <meta name="msapplication-TileColor" content="#000">
-    <meta name="theme-color" content="#ffffff">
-    <!-- Подключен файл со стандартными стилями бустрап -->
-    <link rel="stylesheet" href="{%static 'css/bootstrap.min.css' %}">
-    <!-- Подключены иконки, стили и заполенены мета теги -->
-    <title>Пост {{ post.text|truncatechars:30}}</title>
-  </head>
-  <body>
-    <header>
-        <nav class="navbar navbar-light" style="background-color: lightskyblue">
-            <div class="container">
-              <a class="navbar-brand" href="{% url 'posts:index' %}">
-                <img src="{%static 'img/logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
-                <!-- тег span используется для добавления нужных стилей отдельным участкам текста -->
-                <span style="color:violet">Ya</span><span style="color:yellow">tube</span>
-              </a>
-        </div>
-      </nav>
-    </header>
-    <main>
-      <div class="row">
-        <aside class="col-12 col-md-3">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              Дата публикации: {{ post.pub_date|date:"d M Y" }}
-            </li>
-            {% if post.group %}
-            <li class="list-group-item">
-                Группа: {{ group.title }}
-                <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
-            </li>
-            {% endif %}
-            <li class="list-group-item">
-              Автор: {{ post.author.get_full_name }}
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Всего постов автора:  <span ><!-- --></span>
-            </li>
-            <li class="list-group-item">
-              <a href="<!-- -->">
-                все посты пользователя
-              </a>
-            </li>
-          </ul>
-        </aside>
-        <article class="col-12 col-md-9">
-          <p>
-           <!--
-            [Фокшаны.] Еще переходъ до Фокшанъ, во время котораго я ѣхалъ съ 
-            Монго. Человѣкъ пустой, но съ твердыми, хотя и ложными убѣжденіями.
-            Генерал[у] по этому должно быть случаю, угодно было спрашивать о мое
-            мъ здоровьи.
-            Свинья! К[о]вырялъ носъ и ничего не написалъ — вотъ 2 упрека за 
-            нын[ѣшній]     день. Послѣдній упрекъ становится слишкомъ частъ, 
-            хотя походъ и можетъ служить въ немъ отчасти извиненіемъ. 
-            Отношенія мои съ товарищами становятся такъ пріятны, что мнѣ 
-            жалко бросить штабъ. Здоровье кажется (2) лучше. 
-           --> 
-          </p>
-        </article>
-      </div> 
-    </main>
-    {% include 'includes/footer.html' %}
-  </body>
-</html>
+{% extends "base.html" %}
+{% block title %}
+Профайл пользователя {{ author.get_full_name }}
+{% endblock %}
+{% block content %}
+<main>
+  <div class="container py-5">        
+    <h1>Все посты пользователя {{ author.get_full_name }}</h1>
+    <h3>Всего постов: {{ author.posts.all.count }} </h3>   
+    <article>
+      <ul>
+        <li>
+          Автор: {{ author.get_full_name }}
+          <a href="{{% url 'posts:profile' post.author %}}">все посты пользователя</a>
+        </li>
+        <li>
+          Дата публикации: {{ post.pub_date|date:"d M Y" }}
+        </li>
+      </ul>
+      <p>
+      {{ post.text|linebreaksbr }}
+      </p>
+      <a href="<!-- -->">подробная информация </a>
+    </article>       
+    <a href="<!-- -->">все записи группы</a>        
+    <hr>
+    <!-- Остальные посты. после последнего нет черты -->
+    <!-- Здесь подключён паджинатор -->  
+  </div>
+{% endblock content %}
