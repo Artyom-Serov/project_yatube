@@ -11,7 +11,7 @@
           Новый пост
         </div>
         <div class="card-body">
-          <form method="post" action="../posts/create_post.html">
+          <form method="post" action="posts/create_post.html">
             <input type="hidden" name="csrfmiddlewaretoken" value="">
             <div class="form-group row my-3 p-3">
               <label for="id_text">
@@ -31,6 +31,7 @@
               <select name="group" class="form-control" id="id_group">
                 <option value="" selected>---------</option>
                 <option value="1">Группа: Лев Толстой – зеркало русской революции</option>
+                <option value="2">Просто мысли</option>
               </select>
               <small id="id_group-help" class="form-text text-muted">
                 {% if post.group %}
