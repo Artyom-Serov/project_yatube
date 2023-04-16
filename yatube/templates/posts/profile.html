@@ -1,30 +1,33 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
 {% block title %}
-Профайл пользователя {{ author.get_full_name }}
+{{ author.get_full_name }} - профайл пользователя
 {% endblock %}
+
 {% block content %}
-<main>
-  <div class="container py-5">        
-    <h1>Все посты пользователя {{ author.get_full_name }}</h1>
-    <h3>Всего постов: {{ author.posts.all.count }} </h3>   
-    <article>
-      <ul>
-        <li>
-          Автор: {{ author.get_full_name }}
-          <a href="{{% url 'posts:profile' post.author %}}">все посты пользователя</a>
-        </li>
-        <li>
-          Дата публикации: {{ post.pub_date|date:"d M Y" }}
-        </li>
-      </ul>
-      <p>
-      {{ post.text|linebreaksbr }}
-      </p>
-      <a href="<!-- -->">подробная информация </a>
-    </article>       
-    <a href="<!-- -->">все записи группы</a>        
+<div class="container py-5">
+  <h1>Все посты пользователя {{ author.get_full_name }}</h1>
+  <h3>Всего постов: {{ author.posts.count }} </h3>
+  {% for post in page_obj %}
+  <article>
+    <ul>
+      <li>Дата публикации: {{ post.pub_date|date:"d M Y" }}
+      </li>
+    </ul>
+    <p>{{ post.text }}</p>
+    <a href="{% url 'posts:post_detail' post.id %}">подробная информация</a>
+    {% if post.group %}
+    <p>{{ post.group.title }}</p>
+    <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+    {% else %}
+    <p>Группа не указана</p>
+    {% endif %}
     <hr>
-    <!-- Остальные посты. после последнего нет черты -->
-    <!-- Здесь подключён паджинатор -->  
-  </div>
-{% endblock content %}
+  </article>
+  {% empty %}
+  <p>У пользователя {{ author.username }} нет постов.</p>
+  {% endfor %}
+  <!-- Если количество записей больше 10, то показываем пагинатор -->
+  {% include 'posts/includes/paginator.html' %}
+</div>
+{% endblock %}

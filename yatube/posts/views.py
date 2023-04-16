@@ -49,7 +49,7 @@ def group_posts(request, slug):
 def profile(request, username):
     # Здесь код запроса к модели и создание словаря контекста
     user = get_object_or_404(User, username=username)
-    post_list = user.posts.all().order_by('-pub_date')
+    post_list = user.post_set.all().order_by('-pub_date')
     page_number = request.GET.get('page')
     paginator = Paginator(post_list, DISPLAY)
     page_obj = paginator.get_page(page_number)
