@@ -7,13 +7,16 @@ User = get_user_model()
 
 class Post(models.Model):
     """Модель постов."""
-    text = models.TextField()
+    text = models.TextField(verbose_name="Запись")
     # Поле для хранения произвольного текста
-    pub_date = models.DateTimeField(auto_now_add=True)
+    pub_date = models.DateTimeField(auto_now_add=True,
+                                    verbose_name="Дата создания"
+                                    )
     # Поле для хранения даты и времени
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        verbose_name="Автор"
     )
     # Поле для хранения автора, со ссылкой на модель User.
     # параметр *on_delete=models.CASCADE* обеспечивает
