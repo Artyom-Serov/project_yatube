@@ -11,32 +11,27 @@
           Новый пост
         </div>
         <div class="card-body">
-          <form method="post" action="posts/create_post.html">
-            <input type="hidden" name="csrfmiddlewaretoken" value="">
+          <form method="post" action="{% url 'posts:post_create' %}">
+            {% csrf_token %}
             <div class="form-group row my-3 p-3">
               <label for="id_text">
-                Текст поста
-                <span class="required text-danger" >*</span>
+                {{ form.text.label }}
+                {% if form.text.field.required %}
+                  <span class="required text-danger">*</span>
+                {% endif %}
               </label>
-              <textarea name="text" cols="40" rows="10" class="form-control" required id="id_text">
-              </textarea>
-              <small id="id_text-help" class="form-text text-muted">
-                Текст нового поста
+              {{ form.text }}
+              <small id="{{ form.text.id_for_label }}-help" class="form-text text-muted">
+                {{ form.text.help_text }}
               </small>
             </div>
             <div class="form-group row my-3 p-3">
-              <label for="id_group">
-                Группа
+              <label for="{{ form.group.id_for_label }}">
+                {{ form.group.label }}
               </label>
-              <select name="group" class="form-control" id="id_group">
-                <option value="" selected>---------</option>
-                <option value="1">Группа: Лев Толстой – зеркало русской революции</option>
-                <option value="2">Просто мысли</option>
-              </select>
-              <small id="id_group-help" class="form-text text-muted">
-                {% if post.group %}
-                <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
-                {% endif %}
+              {{ form.group }}
+              <small id="{{ form.group.id_for_label }}-help" class="form-text text-muted">
+                {{ form.group.help_text }}
               </small>
             </div>
             <div class="d-flex justify-content-end">

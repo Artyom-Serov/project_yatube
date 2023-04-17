@@ -7,6 +7,10 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ['text', 'group']
         widgets = {
-            'text': forms.Textarea(attrs={'class': 'form-control'}),
-            'group': forms.Select(attrs={'class': 'form-control'}),
+            'text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Введите текст вашего поста здесь'}),
+            'group': forms.Select(attrs={
+                'class': 'form-control',
+                'title': 'Выберите группу для публикации'}),
         }

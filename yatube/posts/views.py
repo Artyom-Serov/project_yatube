@@ -9,18 +9,24 @@ DISPLAY = 10
 # Количество отображаемых постов
 
 
+def get_paginator(queryset, display, page_number):
+    # функция для паджинации данных в шаблонах
+    paginator = Paginator(queryset, display)
+    page_obj = paginator.get_page(page_number)
+    return paginator, page_obj
+
+
 def index(request):
     # Передаем адрес шаблона в переменную
     template = 'posts/index.html'
     # В переменную posts будет сохранена выборка из 10 объектов модели Post,
     # отсортированных по ordering в классе Meta
-    posts = Post.objects.all()[:]
-    paginator = Paginator(posts, DISPLAY)
+    posts = Post.objects.all()
     # Из URL извлекаем номер запрошенной страницы - это значение параметра page
     page_number = request.GET.get('page')
-    # Получаем набор записей для страницы с запрошенным номером
-    page_obj = paginator.get_page(page_number)
-    # Отдаем в словаре контекста lkz отправки информации в шаблон
+    # Подключаем функцию паджинации
+    paginator, page_obj = get_paginator(posts, DISPLAY, page_number)
+    # Отдаем в словаре контекста для отправки информации в шаблон
     context = {
         'page_obj': page_obj,
     }
@@ -31,12 +37,10 @@ def group_posts(request, slug):
     template = 'posts/group_list.html'
     group = get_object_or_404(Group, slug=slug)
     posts = group.posts.all()
-    # создаем объект пагинатора, указывая количество элементов на странице
-    paginator = Paginator(posts, DISPLAY)
-    # получаем номер страницы из GET-параметра, либо используем 1
-    page_number = request.GET.get('page', 1)
-    # получаем объект страницы
-    page_obj = paginator.get_page(page_number)
+    # Получаем номер страницы из GET-параметра
+    page_number = request.GET.get('page')
+    # Подключаем функцию паджинации
+    paginator, page_obj = get_paginator(posts, DISPLAY, page_number)
     context = {
         'group': group,
         'posts': page_obj,
@@ -51,8 +55,8 @@ def profile(request, username):
     user = get_object_or_404(User, username=username)
     post_list = user.post_set.all().order_by('-pub_date')
     page_number = request.GET.get('page')
-    paginator = Paginator(post_list, DISPLAY)
-    page_obj = paginator.get_page(page_number)
+    # Подключаем функцию паджинации
+    paginator, page_obj = get_paginator(post_list, DISPLAY, page_number)
     context = {
         'author': user,
         'post_list': post_list,

@@ -7,10 +7,11 @@ User = get_user_model()
 
 class Post(models.Model):
     """Модель постов."""
-    text = models.TextField(verbose_name="Запись")
+    text = models.TextField(verbose_name='Запись',
+                            help_text='Место для вашей записи')
     # Поле для хранения произвольного текста
     pub_date = models.DateTimeField(auto_now_add=True,
-                                    verbose_name="Дата создания"
+                                    verbose_name='Дата создания'
                                     )
     # Поле для хранения даты и времени
     author = models.ForeignKey(
@@ -27,7 +28,9 @@ class Post(models.Model):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name='posts'
+        related_name='posts',
+        verbose_name='Группа',
+        help_text='Выберите группу для публикации'
     )
     # Поле для хранения группы, со ссылкой на модель Group.
     # параметр *on_delete=models.SET_NULL* обеспечивает
