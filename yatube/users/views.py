@@ -1,4 +1,5 @@
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
+from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
 # Функция reverse_lazy позволяет получить URL по параметрам функции path().
 from .forms import CreationForm
@@ -13,10 +14,18 @@ class SignUp(CreateView):
     template_name = 'users/signup.html'
 
 
-send_mail(
-    'Тема письма',
-    'Текст письма.',
-    'from@example.com',  # Это поле "От кого"
-    ['to@example.com'],  # Это поле "Кому" (можно указать список адресов)
-    fail_silently=False,  # Сообщать об ошибках («молчать ли об ошибках?»)
-)
+class PasswordChange(PasswordChangeView):
+    success_url = reverse_lazy('users:password_change_done')
+    template_name = 'users/password_change_form.html'
+
+    send_mail(
+        'Cмена пароля',
+        'Текст письма.',
+        'from@example.com',  # Это поле "От кого"
+        ['to@example.com'],  # Это поле "Кому" (можно указать список адресов)
+        fail_silently=False,  # Сообщать об ошибках («молчать ли об ошибках?»)
+    )
+
+
+class PasswordChangeDoneView(TemplateView):
+    template_name = 'users/password_change_done.html'
