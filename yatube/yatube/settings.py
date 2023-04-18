@@ -147,3 +147,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 
 # указываем директорию, в которую будут складываться файлы писем
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+PASSWORD_RESET_EMAIL_TEMPLATE = 'users/password_reset_email.html'
