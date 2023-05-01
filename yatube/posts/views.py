@@ -65,6 +65,17 @@ def profile(request, username):
     return render(request, 'posts/profile.html', context)
 
 
+def post_detail(request, post_id):
+    # Здесь код запроса к модели и создание словаря контекста
+    post = get_object_or_404(Post, pk=post_id)
+    title = (f'Пост: {post.text[:30]}')
+    context = {
+        'post': post,
+        'title': title,
+    }
+    return render(request, 'posts/post_detail.html', context)
+
+
 @login_required
 def post_create(request):
     if request.method == 'POST':
@@ -77,17 +88,6 @@ def post_create(request):
     else:
         form = PostForm()
     return render(request, 'posts/create_post.html', {'form': form})
-
-
-def post_detail(request, post_id):
-    # Здесь код запроса к модели и создание словаря контекста
-    post = get_object_or_404(Post, pk=post_id)
-    title = (f'Пост: {post.text[:30]}')
-    context = {
-        'post': post,
-        'title': title,
-    }
-    return render(request, 'posts/post_detail.html', context)
 
 
 @login_required

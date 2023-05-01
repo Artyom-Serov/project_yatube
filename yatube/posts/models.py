@@ -17,7 +17,7 @@ class Post(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name="Автор"
+        verbose_name='Автор'
     )
     # Поле для хранения автора, со ссылкой на модель User.
     # параметр *on_delete=models.CASCADE* обеспечивает
@@ -42,22 +42,28 @@ class Post(models.Model):
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
 
+    def __str__(self):
+        return self.text[:15]
+
 
 class Group(models.Model):
     """Модель групп."""
     title = models.CharField(
         max_length=200,
-        verbose_name='Название'
+        verbose_name='Название',
+        help_text='Введите название группы'
     )
     # Название группы
     slug = models.SlugField(
         null=True,
         unique=True,
-        verbose_name='Адрес группы'
+        verbose_name='Адрес группы',
+        help_text='Выберите уникальный адрес для группы'
     )
     # Уникальный адрес группы
     description = models.TextField(
-        verbose_name='Описание'
+        verbose_name='Описание',
+        help_text='Описание особенности группы'
     )
     # Tекст, описывающий сообщество
 
