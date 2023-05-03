@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'posts.apps.PostsConfig',
     'core.apps.CoreConfig',
     'about.apps.AboutConfig',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
@@ -156,3 +157,6 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 PASSWORD_RESET_EMAIL_TEMPLATE = 'users/password_reset_email.html'
 
 CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

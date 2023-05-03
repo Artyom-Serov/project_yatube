@@ -32,10 +32,13 @@ class Post(models.Model):
         verbose_name='Группа',
         help_text='Выберите группу для публикации'
     )
-    # Поле для хранения группы, со ссылкой на модель Group.
-    # параметр *on_delete=models.SET_NULL* обеспечивает
-    # связность данных: если из таблицы Group будет удалена группа,
-    # то в поле ссылки на группу будет значение NULL.
+    # Поле для картинки (необязательное)
+    image = models.ImageField(
+        'Картинка',
+        upload_to='posts/',
+        blank=True,
+        help_text='Выберите изображение для поста'
+    )
 
     class Meta:
         ordering = ['-pub_date', ]
