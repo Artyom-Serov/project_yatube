@@ -7,3 +7,6 @@
       </li>
     </ul> 
     <p>{{ post.text }}</p>
+    {% if post.image %}
+      <p><img src="{{ post.image.url }}" alt="{{ post.title }}"></p>
+    {% endif %}
