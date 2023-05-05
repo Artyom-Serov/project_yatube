@@ -69,9 +69,11 @@ def post_detail(request, post_id):
     # Здесь код запроса к модели и создание словаря контекста
     post = get_object_or_404(Post, pk=post_id)
     title = (f'Пост: {post.text[:30]}')
+    image_url = post.image.url if post.image else None
     context = {
         'post': post,
         'title': title,
+        'image_url': image_url,
     }
     return render(request, 'posts/post_detail.html', context)
 
