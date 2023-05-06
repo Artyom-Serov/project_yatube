@@ -131,6 +131,8 @@ class PostPagesTests(TestCase):
         # Проверяем, что словарь передается в шаблон profile.html
         self.assertTemplateUsed(response, 'posts/profile.html')
         self.assertIn(PostPagesTests.post, response.context['page_obj'])
+        # Проверяем, что изображение передается в словаре context
+        self.assertContains(response, '<img')
 
     def test_post_detail_page_show_correct_context(self):
         """Шаблон post_detail сформирован с правильным словарем,
@@ -146,6 +148,7 @@ class PostPagesTests(TestCase):
         self.assertContains(response, self.post.author.username)
         self.assertContains(response, self.post.text)
         self.assertContains(response, self.post.group.title)
+        self.assertContains(response, '<img')
 
     def test_post_create_page_show_correct_context(self):
         """Шаблон post_create сформирован с правильным словарем"""
