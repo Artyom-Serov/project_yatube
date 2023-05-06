@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 # Импортируем модель, чтобы обратиться к ней
@@ -61,6 +62,7 @@ def profile(request, username):
         'author': user,
         'post_list': post_list,
         'page_obj': page_obj,
+        'MEDIA_URL': settings.MEDIA_URL,
     }
     return render(request, 'posts/profile.html', context)
 
@@ -69,11 +71,10 @@ def post_detail(request, post_id):
     # Здесь код запроса к модели и создание словаря контекста
     post = get_object_or_404(Post, pk=post_id)
     title = (f'Пост: {post.text[:30]}')
-    image_url = post.image.url if post.image else None
     context = {
         'post': post,
         'title': title,
-        'image_url': image_url,
+        'MEDIA_URL': settings.MEDIA_URL,
     }
     return render(request, 'posts/post_detail.html', context)
 

@@ -1,4 +1,9 @@
+import shutil
+import tempfile
+
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django import forms
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -6,12 +11,28 @@ from django.urls import reverse
 from posts.models import Post, Group
 
 User = get_user_model()
+# Создаем временную папку для медиа-файлов;
+# на момент теста медиа папка будет переопределена
+TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
 
 class PostPagesTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Создаем тестовое изображение
+        small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x01\x00'
+            b'\x01\x00\x00\x00\x00\x21\xf9\x04'
+            b'\x01\x0a\x00\x01\x00\x2c\x00\x00'
+            b'\x00\x00\x01\x00\x01\x00\x00\x02'
+            b'\x02\x4c\x01\x00\x3b'
+        )
+        uploaded = SimpleUploadedFile(
+            name='small.gif',
+            content=small_gif,
+            content_type='image/gif'
+        )
         # Создаем тестового пользователя
         cls.user = User.objects.create_user(username='auth')
         # Создаем тестовую группу
@@ -24,8 +45,19 @@ class PostPagesTests(TestCase):
         cls.post = Post.objects.create(
             text='Тестовое описание текста',
             author=cls.user,
-            group=cls.group
+            group=cls.group,
+            image=uploaded,
         )
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        # Модуль shutil - библиотека Python с прекрасными инструментами
+        # для управления файлами и директориями:
+        # создание, удаление, копирование, перемещение,
+        # изменение папок и файлов
+        # Метод shutil.rmtree удаляет директорию и всё её содержимое
+        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def setUp(self):
         # Создаём экземпляры клиента.
@@ -67,6 +99,8 @@ class PostPagesTests(TestCase):
         # содержит ли ответ с запрошенного URL-адреса текст,
         # сохраненный в посте
         self.assertContains(response, self.post.text)
+        # проверяем что словарь передает изображение в шаблон
+        self.assertContains(response, 'img')
         # содержит ли созданный слловарь переменную с именем 'page_obj'.
         self.assertIn('page_obj', response.context)
         # проверяем что словарь передает список записей в шаблон
@@ -84,13 +118,14 @@ class PostPagesTests(TestCase):
         self.assertTemplateUsed(response, 'posts/group_list.html')
         self.assertEqual(response.context['page_obj'][0], self.post)
         self.assertEqual(response.context['group'], self.group)
+        # Проверяем, что изображение передается в словаре context
+        self.assertContains(response, '<img')
 
     def test_profile_page_show_correct_context(self):
         """Шаблон profile сформирован с правильным словарем."""
-        response = self.authorized_client.get(
-            reverse('posts:profile',
-                    kwargs={'username': PostPagesTests.user.username})
-        )
+        url = reverse('posts:profile',
+                      kwargs={'username': PostPagesTests.user.username})
+        response = self.authorized_client.get(url)
         # Проверяем, что запрос завершился успешно
         self.assertEqual(response.status_code, 200)
         # Проверяем, что словарь передается в шаблон profile.html
@@ -100,10 +135,11 @@ class PostPagesTests(TestCase):
     def test_post_detail_page_show_correct_context(self):
         """Шаблон post_detail сформирован с правильным словарем,
         фильтрация постов по id."""
-        response = self.authorized_client.get(reverse(
+        url = reverse(
             'posts:post_detail',
             kwargs={'post_id': PostPagesTests.post.pk}
-        ))
+        )
+        response = self.authorized_client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'posts/post_detail.html')
         self.assertContains(response, 'Тестовое описание текста')
@@ -113,7 +149,8 @@ class PostPagesTests(TestCase):
 
     def test_post_create_page_show_correct_context(self):
         """Шаблон post_create сформирован с правильным словарем"""
-        response = self.authorized_client.get(reverse('posts:create_post'))
+        url = reverse('posts:create_post')
+        response = self.authorized_client.get(url)
         self.assertEqual(response.status_code, 200)
         context = response.context
         # Проверяем, что форма из контекста имеет нужные поля
@@ -129,6 +166,7 @@ class PostPagesTests(TestCase):
 
     def test_post_create_show_correct_form(self):
         """Проверка правильности формы создания поста."""
+        url = reverse('posts:create_post')
         # Создаем словарь с данными формы
         form_data = {
             'text': 'Тестовый текст',
@@ -136,7 +174,7 @@ class PostPagesTests(TestCase):
         }
         # Отправляем POST-запрос на создание поста
         response = self.authorized_client.post(
-            reverse('posts:create_post'),
+            url,
             data=form_data,
             follow=True,
         )
