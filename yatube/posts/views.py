@@ -53,7 +53,7 @@ def group_posts(request, slug):
 def profile(request, username):
     # функция отображения деталей профайла
     user = get_object_or_404(User, username=username)
-    post_list = user.post_set.all().order_by('-pub_date')
+    post_list = user.post_set.all().order_by('-created')
     page_number = request.GET.get('page')
     # Подключаем функцию паджинации
     paginator, page_obj = get_paginator(post_list, DISPLAY, page_number)

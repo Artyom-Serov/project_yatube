@@ -1,18 +1,19 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from core.models import CreatedModel
 
 User = get_user_model()
 """Обращаемся к модели User через функцию get_user_model."""
 
 
-class Post(models.Model):
+class Post(CreatedModel):
     """Модель постов."""
     text = models.TextField(verbose_name='Запись',
                             help_text='Место для вашей записи')
     # Поле для хранения произвольного текста
-    pub_date = models.DateTimeField(auto_now_add=True,
-                                    verbose_name='Дата создания'
-                                    )
+    created = models.DateTimeField(auto_now_add=True,
+                                   verbose_name='Дата создания'
+                                   )
     # Поле для хранения даты и времени
     author = models.ForeignKey(
         User,
@@ -41,7 +42,7 @@ class Post(models.Model):
     )
 
     class Meta:
-        ordering = ['-pub_date', ]
+        ordering = ['-created', ]
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
 
@@ -84,7 +85,7 @@ class Group(models.Model):
         return self.title
 
 
-class Comment(models.Model):
+class Comment(CreatedModel):
     """Модель комментариев."""
     post = models.ForeignKey(
         Post,

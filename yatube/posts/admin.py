@@ -9,7 +9,7 @@ class PostAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
         'text',
-        'pub_date',
+        'created',
         'author',
         'group',
     )
@@ -18,7 +18,7 @@ class PostAdmin(admin.ModelAdmin):
     # Возможность изменять поле group в любом посте
     search_fields = ('text',)
     # Интерфейс для поиска по тексту постов
-    list_filter = ('pub_date',)
+    list_filter = ('created',)
     # Возможность фильтрации по дате
     empty_value_display = '-пусто-'
     # Свойство отображения пустых колонок
