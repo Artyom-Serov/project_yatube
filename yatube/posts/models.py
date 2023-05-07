@@ -90,7 +90,8 @@ class Comment(models.Model):
         Post,
         on_delete=models.CASCADE,
         related_name='comments',
-        verbose_name='Пост'
+        verbose_name='Пост',
+        help_text='Пост, к которому написан комментарий'
     )
     # Поле для связи комментариев с постом, со ссылкой на модель Post.
     # параметр *on_delete=models.CASCADE* обеспечивает связность данных:
@@ -106,7 +107,9 @@ class Comment(models.Model):
     # параметр *on_delete=models.CASCADE* обеспечивает связность данных:
     # если из таблицы User будет удалён пользователь,
     # то будут удалены все связанные с ним комментарии.
-    text = models.TextField(verbose_name='Комментарий')
+    text = models.TextField(
+        verbose_name='Комментарий',
+        help_text='Введите текст вашего комментария')
     # Поле для хранения текста комментария.
     created = models.DateTimeField(
         auto_now_add=True,
