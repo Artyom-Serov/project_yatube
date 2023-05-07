@@ -1,10 +1,9 @@
 from django.core.paginator import Paginator
-from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 # Импортируем модель, чтобы обратиться к ней
 from .models import Post, Group, User
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 
 DISPLAY = 10
 # Количество отображаемых постов
@@ -52,7 +51,7 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-    # Здесь код запроса к модели и создание словаря контекста
+    # функция отображения деталей профайла
     user = get_object_or_404(User, username=username)
     post_list = user.post_set.all().order_by('-pub_date')
     page_number = request.GET.get('page')
@@ -62,25 +61,43 @@ def profile(request, username):
         'author': user,
         'post_list': post_list,
         'page_obj': page_obj,
-        'MEDIA_URL': settings.MEDIA_URL,
     }
     return render(request, 'posts/profile.html', context)
 
 
 def post_detail(request, post_id):
-    # Здесь код запроса к модели и создание словаря контекста
+    # функция отображения информациии о посте
     post = get_object_or_404(Post, pk=post_id)
     title = (f'Пост: {post.text[:30]}')
+    image_url = post.image.url if post.image else None
+    comments = post.comments.all()
+    form = CommentForm()
     context = {
         'post': post,
         'title': title,
-        'MEDIA_URL': settings.MEDIA_URL,
+        'image_url': image_url,
+        'comments': comments,
+        'form': form,
     }
     return render(request, 'posts/post_detail.html', context)
 
 
 @login_required
+def add_comment(request, post_id):
+    # функция комментирования поста
+    post = get_object_or_404(Post, pk=post_id)
+    form = CommentForm(request.POST or None)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.author = request.user
+        comment.post = post
+        comment.save()
+    return redirect('posts:post_detail', post_id=post_id)
+
+
+@login_required
 def post_create(request):
+    # функция для создания поста
     if request.method == 'POST':
         form = PostForm(request.POST, files=request.FILES)
         if form.is_valid():
@@ -95,6 +112,7 @@ def post_create(request):
 
 @login_required
 def post_edit(request, post_id):
+    # функция для редактирования поста
     post = get_object_or_404(Post, id=post_id)
     if post.author != request.user:
         return redirect('posts:post_detail', post_id=post.id)
