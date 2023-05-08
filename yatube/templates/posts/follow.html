@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Последние обновления на сайте
+Отслеживаемые посты
 {% endblock title %}
 
 {% block content %}
 <div class="container py-1">
-  {% include 'posts/includes/switcher.html' %}
-</div>
+    {% include 'posts/includes/switcher.html' %}
+  </div>
 <div class="container py-5">
-  <h1>Последние обновления на сайте</h1>
+  <h1>Список отслеживаемых записей</h1>
   {% for post in page_obj %}
     {% include 'posts/posts_view.html' %}
     {% if post.group.slug %}
@@ -26,4 +26,3 @@
   {% include 'posts/includes/paginator.html' %}
 </div>
 {% endblock %}
-{% include 'includes/footer.html' %}

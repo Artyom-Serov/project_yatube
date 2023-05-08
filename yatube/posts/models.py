@@ -126,3 +126,37 @@ class Comment(CreatedModel):
 
     def __str__(self):
         return self.text[:15]
+
+
+class Follow(models.Model):
+    """Модель подписки на авторов."""
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='follower',
+        verbose_name='Подписчик',
+        help_text='Кто подписывается'
+    )
+    # Поле для связи подписчика с пользователем, со ссылкой на модель User.
+    # параметр *on_delete=models.CASCADE* обеспечивает связность данных:
+    # если из таблицы User будет удалён пользователь,
+    # то будут удалены все связанные с ним подписки.
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='following',
+        verbose_name='Автор',
+        help_text='На кого подписываются'
+    )
+    # Поле для связи автора с пользователем, со ссылкой на модель User.
+    # параметр *on_delete=models.CASCADE* обеспечивает связность данных:
+    # если из таблицы User будет удалён пользователь,
+    # то будут удалены все связанные с ним подписки.
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+
+    def __str__(self):
+        return f'{self.user.username} -> {self.author.username}'

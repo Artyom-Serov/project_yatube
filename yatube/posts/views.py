@@ -3,7 +3,7 @@ from django.core.cache import cache
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 # Импортируем модель, чтобы обратиться к ней
-from .models import Post, Group, User
+from .models import Post, Group, User, Follow
 from .forms import PostForm, CommentForm
 
 DISPLAY = 10
@@ -140,3 +140,35 @@ def post_edit(request, post_id):
     return render(request, 'posts/update_post.html',
                   {'form': form, 'is_edit': is_edit}
                   )
+
+
+@login_required
+def follow_index(request):
+    # Получаем список авторов, на которых подписан пользователь
+    following = request.user.follower.values_list('user__id', flat=True)
+    # Получаем список последних постов от авторов,
+    # на которых подписан пользователь
+    posts = Post.objects.filter(
+        author__id__in=following).order_by('-created')[:DISPLAY]
+    context = {'posts': posts}
+    return render(request, 'posts/follow.html', context)
+
+
+@login_required
+def profile_follow(request, username):
+    # Подписаться на автора
+    # Находим пользователя, на которого хотим подписаться
+    author = get_object_or_404(User, username=username)
+    # Создаем запись Follow
+    Follow.objects.get_or_create(user=request.user, author=author)
+    return redirect('posts:profile', username=username)
+
+
+@login_required
+def profile_unfollow(request, username):
+    # Дизлайк, отписка
+    # Находим пользователя, на которого хотим подписаться
+    author = get_object_or_404(User, username=username)
+    # Создаем запись Follow
+    Follow.objects.get_or_create(user=request.user, author=author)
+    return redirect('posts:profile', username=username)
