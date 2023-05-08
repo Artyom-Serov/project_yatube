@@ -21,11 +21,23 @@
                 {% if field.required %}
                   <span class="required text-danger">*</span>
                 {% endif %}
+                {% if field.name == 'image' and field.value %}
+                  <br>На данный момент: 
+                  <a href="{{ form.instance.image.url }}">
+                    {{ form.instance }}
+                  </a>
+                  <br>
+                  <input type="checkbox" name="image-clear" id="image-clear_id">
+                  <label for="image-clear_id">Удалить изображение</label>
+                  <br>
+                  Изменить изображение:
+                  <br>
+                {% endif %}
+                {{ field }}
+                <small id="{{ field.id_for_label }}-help" class="form-text text-muted">
+                <p>{{ field.help_text }}</p>
+                </small>
               </label>
-              {{ field }}
-              <small id="{{ field.id_for_label }}-help" class="form-text text-muted">
-                {{ field.help_text }} </small>
-              </small>
             </div>
             {% endfor %}
             <div>
@@ -51,3 +63,24 @@
 </div>
 {% endblock content %}
 
+{% comment %}
+{% if field.label == 'image' %}
+                  <label for="{{ form.image.id_for_label }}">
+                    <span class="required text-danger">*</span>
+                    Изображение
+                  </label>
+                  На данный момент: 
+                  <a href="{{ form.image.url }}">
+                    {{ form.image.url }}
+                  </a>
+                  <input type="checkbox" name="image-clear" id="image-clear_id">
+                  <label for="image-clear_id">
+                    Очистить</label><br>
+                    Изменить:
+                    {{ form.image }}
+              {% endif %}
+{% if form.instance.image %}
+                    <a href="{{ form.instance.image.url }}" target="_blank">
+                      На данный момент: {{ form.instance.image.url }}
+                    </a>
+{% endcomment %}

@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.core.cache import cache
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 # Импортируем модель, чтобы обратиться к ней
@@ -17,6 +18,12 @@ def get_paginator(queryset, display, page_number):
 
 
 def index(request):
+    # функция главной страницы
+    key_prefix = 'index_page'
+    posts = cache.get(key_prefix)
+    if not posts:
+        posts = Post.objects.all()
+        cache.set(key_prefix, posts, timeout=20)
     # Передаем адрес шаблона в переменную
     template = 'posts/index.html'
     # В переменную posts будет сохранена выборка из 10 объектов модели Post,
@@ -123,6 +130,8 @@ def post_edit(request, post_id):
             instance=post
         )
         if form.is_valid():
+            if form.cleaned_data.get('image-clear'):
+                post.image.delete()
             form.save()
             return redirect('posts:post_detail', post_id=post.id)
     else:

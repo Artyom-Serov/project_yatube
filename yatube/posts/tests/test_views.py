@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
+from django.core.cache import cache
 from django.urls import reverse
 
 from posts.models import Post, Group
@@ -55,6 +56,33 @@ class PostPagesTests(TestCase):
             with self.subTest(reverse_name=reverse_name):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
+
+    def test_index_page_cache(self):
+        """Тестируем кэширование главной страницы."""
+        key_prefix = 'index_page'
+        # Создаем новый пост
+        test_post = Post.objects.create(
+            text='Test post',
+            author=self.user
+        )
+        response = self.guest_client.get(reverse('posts:index'))
+        # Проверяем, что кэширование работает для гостевого клиента
+        self.assertTemplateUsed(response, 'posts/index.html')
+        self.assertIsNotNone(cache.get(key_prefix))
+        response = self.authorized_client.get(reverse('posts:index'))
+        # Проверяем, что кэширование работает для авторизованного клиента
+        self.assertTemplateUsed(response, 'posts/index.html')
+        self.assertIsNotNone(cache.get(key_prefix))
+        # Удаляем пост из базы данных
+        test_post.delete()
+        # Проверяем, что пост все еще есть на главной странице
+        self.assertIn(self.post.text.encode(), response.content)
+        # Очищаем кэш
+        cache.delete(key_prefix)
+        # Делаем новый запрос к главной странице
+        response = self.guest_client.get(reverse('posts:index'))
+        # Проверяем, что поста уже нет на главной странице
+        self.assertNotIn(test_post.text.encode(), response.content)
 
     def test_index_page_show_correct_context(self):
         """Шаблон index сформирован с правильным словарем."""

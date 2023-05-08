@@ -12,6 +12,7 @@ class Post(CreatedModel):
                             help_text='Место для вашей записи')
     # Поле для хранения произвольного текста
     created = models.DateTimeField(auto_now_add=True,
+                                   db_index=True,
                                    verbose_name='Дата создания'
                                    )
     # Поле для хранения даты и времени
