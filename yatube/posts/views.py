@@ -116,12 +116,12 @@ def add_comment(request, post_id):
 def post_create(request):
     # функция для создания поста
     if request.method == 'POST':
-        form = PostForm(request.POST, files=request.FILES)
+        form = PostForm(request.POST, files=request.FILES or None)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            return redirect('posts:profile', request.user)
+            create_post = form.save(commit=False)
+            create_post.author = request.user
+            create_post.save()
+            return redirect('posts:profile', create_post.author)
     else:
         form = PostForm()
     return render(request, 'posts/create_post.html', {'form': form})
@@ -140,8 +140,6 @@ def post_edit(request, post_id):
             instance=post
         )
         if form.is_valid():
-            if form.cleaned_data.get('image-clear'):
-                post.image.delete()
             form.save()
             return redirect('posts:post_detail', post_id=post.id)
     else:

@@ -12,4 +12,4 @@
         style="max-width: 400px; max-height: 300px; object-fit: contain;">
     {% endthumbnail %}
     <p>{{ post.text }}</p>
-    <a href="{% url 'posts:post_detail' post.id %}">подробная информация > </a>
+    <a href="{% url 'posts:post_detail' post.id %}" class="btn btn-primary">Подробная информация > </a>
