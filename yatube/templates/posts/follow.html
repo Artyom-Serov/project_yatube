@@ -5,24 +5,21 @@
 {% endblock title %}
 
 {% block content %}
-<div class="container py-1">
-    {% include 'posts/includes/switcher.html' %}
-  </div>
 <div class="container py-5">
   <h1>Список отслеживаемых записей</h1>
-  {% for post in page_obj %}
+  {% include 'posts/includes/switcher.html' %}
+  <!-- {% for post in page_obj %}
     {% include 'posts/posts_view.html' %}
     {% if post.group.slug %}
       <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы > </a>
     {% endif %}
     {% if user.is_authenticated and user == post.author %}
-    <!-- эта кнопка видна только автору -->
     <a class="btn btn-primary" href="{% url 'posts:post_edit' post_id=post.id %}">
       редактировать запись
     </a>
     {% endif %}
     {% if not forloop.last %}<hr>{% endif %}
   {% endfor %}
-  {% include 'posts/includes/paginator.html' %}
+  {% include 'posts/includes/paginator.html' %} -->
 </div>
 {% endblock %}

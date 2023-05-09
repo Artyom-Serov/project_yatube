@@ -144,31 +144,60 @@ def post_edit(request, post_id):
 
 @login_required
 def follow_index(request):
-    # Получаем список авторов, на которых подписан пользователь
-    following = request.user.follower.values_list('user__id', flat=True)
     # Получаем список последних постов от авторов,
     # на которых подписан пользователь
     posts = Post.objects.filter(
-        author__id__in=following).order_by('-created')[:DISPLAY]
-    context = {'posts': posts}
+        author__following__user=request.user)
+    page_obj = get_paginator(posts, DISPLAY, request)
+    context = {'page_obj': page_obj}
     return render(request, 'posts/follow.html', context)
 
+# ВАРИАНТ НЕЙРОСЕТИ
 
+# @login_required
+# def profile_follow(request, username):
+#    # Подписаться на автора
+#    # Находим пользователя, на которого хотим подписаться
+#    author = get_object_or_404(User, username=username)
+#    # Создаем запись Follow
+#    Follow.objects.get_or_create(user=request.user, author=author)
+#    return redirect('posts:profile', username=username)
+
+# @login_required
+# def profile_unfollow(request, username):
+#    # Дизлайк, отписка
+#    # Находим пользователя, на которого хотим подписаться
+#    author = get_object_or_404(User, username=username)
+#    # Создаем запись Follow
+#    Follow.objects.get_or_create(user=request.user, author=author)
+#    return redirect('posts:profile', username=username)
+
+
+# ВАРИАНТ РУДЕНКО со stackoverflow
 @login_required
 def profile_follow(request, username):
     # Подписаться на автора
-    # Находим пользователя, на которого хотим подписаться
     author = get_object_or_404(User, username=username)
-    # Создаем запись Follow
-    Follow.objects.get_or_create(user=request.user, author=author)
-    return redirect('posts:profile', username=username)
+    if author != request.user:
+        Follow.objects.create(
+            user=request.user,
+            author=author,
+        )
+    return redirect(
+        'posts:profile',
+        author.username
+    )
 
 
 @login_required
 def profile_unfollow(request, username):
-    # Дизлайк, отписка
-    # Находим пользователя, на которого хотим подписаться
+    # Отписаться
     author = get_object_or_404(User, username=username)
-    # Создаем запись Follow
-    Follow.objects.get_or_create(user=request.user, author=author)
-    return redirect('posts:profile', username=username)
+    Follow.objects.filter(
+        user=request.user,
+        author=author,
+    ).delete()
+    return redirect(
+        'posts:profile',
+        author.username
+    )

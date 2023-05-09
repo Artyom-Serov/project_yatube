@@ -154,9 +154,8 @@ class Follow(models.Model):
     # то будут удалены все связанные с ним подписки.
 
     class Meta:
-        ordering = ['-id']
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
 
     def __str__(self):
-        return f'{self.user.username} -> {self.author.username}'
+        return f'{self.user.username} подписался {self.author.username}'
