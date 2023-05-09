@@ -1,5 +1,36 @@
 {% load user_filters %}
 
+{% if comments.count != 0 %}
+  {% with comments.count as total_comments %}
+  <hr>
+  <figure>
+    <blockquote class="blockquote">
+      <div class="shadow-sm p-2 bg-white rounded">
+        Комментариев {{ total_comments }}
+      </div>
+    </blockquote>
+   </figure>
+  {% endwith %}
+{% endif %}
+
+{% for comment in comments %}
+  <div class="media mb-4">
+    <div class="media-body">
+      <h5 class="mt-0">
+        <a href="{% url 'posts:profile' comment.author.username %}">
+          {{ comment.author.username }}
+        </a>
+      </h5>
+      <small>
+        {{ comment.created }}
+      </small>
+      <p>
+        {{ comment.text }}
+      </p>
+    </div>
+  </div>
+{% endfor %}
+
 {% if user.is_authenticated %}
   <div class="card my-4">
     <h5 class="card-header">Добавить комментарий:</h5>
@@ -25,21 +56,3 @@
     </div>
   </div>
 {% endif %}
-
-{% for comment in comments %}
-  <div class="media mb-4">
-    <div class="media-body">
-      <h5 class="mt-0">
-        <a href="{% url 'posts:profile' comment.author.username %}">
-          {{ comment.author.username }}
-        </a>
-      </h5>
-      <small>
-        {{ comment.created }}
-      </small>
-      <p>
-        {{ comment.text }}
-      </p>
-    </div>
-  </div>
-{% endfor %}
