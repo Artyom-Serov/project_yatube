@@ -65,8 +65,8 @@ def group_posts(request, slug):
 
 def profile(request, username):
     # функция отображения деталей профайла
-    user = get_object_or_404(User, username=username)
-    post_list = user.post_set.all().order_by('-created')
+    author = get_object_or_404(User, username=username)
+    post_list = author.post_set.all().order_by('-created')
     page_number = request.GET.get('page')
     # Подключаем функцию паджинации
     paginator, page_obj = get_paginator(
@@ -74,12 +74,16 @@ def profile(request, username):
         settings.DISPLAY,
         page_number
     )
+    following = request.user.is_authenticated
+    if following:
+        following = author.following.filter(user=request.user).exists()
+    template = 'posts/profile.html'
     context = {
-        'author': user,
+        'author': author,
         'post_list': post_list,
         'page_obj': page_obj,
     }
-    return render(request, 'posts/profile.html', context)
+    return render(request, template, context)
 
 
 def post_detail(request, post_id):
@@ -89,6 +93,7 @@ def post_detail(request, post_id):
     image_url = post.image.url if post.image else None
     comments = post.comments.all()
     form = CommentForm()
+    template = 'posts/post_detail.html'
     context = {
         'post': post,
         'title': title,
@@ -96,7 +101,7 @@ def post_detail(request, post_id):
         'comments': comments,
         'form': form,
     }
-    return render(request, 'posts/post_detail.html', context)
+    return render(request, template, context)
 
 
 @login_required
