@@ -3,6 +3,7 @@
 Записи сообщества "{{ group.title }}"
 {% endblock title %}
 {% block content %}
+{% include 'posts/includes/switcher.html' %}
   <div class="container">
     <h1>{{ group.title }}</h1>
     <p>
