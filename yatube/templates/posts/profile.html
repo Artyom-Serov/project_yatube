@@ -22,11 +22,11 @@
     <h3>Всего постов: {{ author.posts.count }} </h3>
     {% if request.user != author %}
       {% if following %}
-        <a class="btn btn-lg btn-light"
+        <a class="btn btn-lg btn-light" style="background-color: seagreen"
         href="{% url 'posts:profile_unfollow' author.username %}" role="button"
         >Отписаться</a>
       {% else %}
-        <a class="btn btn-lg btn-primary"
+        <a class="btn btn-lg btn-primary" style="background-color: seagreen"
         href="{% url 'posts:profile_follow' author.username %}" role="button"
         >Подписаться</a>
       {% endif %}
@@ -42,10 +42,14 @@
           style="max-width: 400px; max-height: 300px; object-fit: contain;">
         {% endthumbnail %}
         <p>{{ post.text }}</p>
-        <a href="{% url 'posts:post_detail' post.id %}">подробная информация</a>
+        <a class="btn btn-primary" style="background-color: seagreen" 
+          href="{% url 'posts:post_detail' post.id %}">
+          Подробная информация</a>
         {% if post.group %}
           <p>{{ post.group.title }}</p>
-          <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+          <a class="btn btn-primary" style="background-color: seagreen" 
+            href="{% url 'posts:group_list' post.group.slug %}">
+            Все записи группы</a>
         {% else %}
         <p>Группа не указана</p>
         {% endif %}

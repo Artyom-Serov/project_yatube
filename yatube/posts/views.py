@@ -138,8 +138,8 @@ def post_create(request):
 def post_edit(request, post_id):
     # функция для редактирования поста
     post = get_object_or_404(Post, id=post_id)
-    if post.author != request.user:
-        return redirect('posts:post_detail', post_id=post.id)
+    if request.user != post.author:
+        return redirect('posts:post_detail', post_id)
     form = PostForm(
         request.POST or None,
         files=request.FILES or None,
@@ -147,7 +147,7 @@ def post_edit(request, post_id):
     )
     if form.is_valid():
         form.save()
-        return redirect('posts:post_detail', post_id=post.id)
+        return redirect('posts:post_detail', post_id)
     template = 'posts/create_post.html'
     context = {'form': form, 'post': post, 'is_edit': True}
     return render(request, template, context)

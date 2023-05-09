@@ -14,12 +14,15 @@
           Дата публикации: {{ post.created|date:"d M Y" }}
         </li>
         <li class="list-group-item">
-          Группа: {% if post.group %}
-          <p>{{ post.group.title }}</p>
-          <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
-          {% else %}
-          Группа не указана
-          {% endif %}
+          Группа: 
+            {% if post.group is not None %}
+            {{ post.group.title }} 
+            <a class="btn btn-primary" style="background-color: seagreen" 
+              href="{% url 'posts:group_list' post.group.slug %}">
+              Все записи группы</a>
+            {% else %}
+              не указана
+            {% endif %}
         </li>
         <li class="list-group-item">
           Автор: {{ post.author.get_full_name }}
@@ -28,7 +31,9 @@
           Всего постов автора: <span>{{ post.author.post_set.count }}</span>
         </li>
         <li class="list-group-item">
-          <a href="{% url 'posts:profile' username=post.author.username %}">все посты пользователя</a>
+          <a class="btn btn-primary" style="background-color: seagreen" 
+            href="{% url 'posts:profile' username=post.author.username %}">
+            Все посты пользователя</a>
         </li>
       </ul>
     </aside>
@@ -41,8 +46,9 @@
         {{ post.text }}</p>
         {% if user.is_authenticated and user == post.author %}
         <!-- эта кнопка видна только автору -->
-        <a class="btn btn-primary" href="{% url 'posts:post_edit' post_id=post.id %}">
-          редактировать запись
+        <a class="btn btn-primary" style="background-color: seagreen" 
+          href="{% url 'posts:post_edit' post_id=post.id %}">
+          Редактировать запись
         </a>
         {% endif %}
         {% include 'posts/post_comment.html' %}

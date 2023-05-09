@@ -3,14 +3,20 @@
 Записи сообщества "{{ group.title }}"
 {% endblock title %}
 {% block content %}
-{% include 'posts/includes/switcher.html' %}
+
   <div class="container">
-    <h1>{{ group.title }}</h1>
-    <p>
-      {{ group.description|linebreaks }}
-    </p>
+    {% include 'posts/includes/switcher.html' %}
+    <div class="card bg-light" style="width: 100%">
+      <div class="card-body">
+        <h1 class="card-title">{{ group.title }}</h1>
+        <p class="card-text">{{ group.description|linebreaks }}</p>
+      </div>
+    </div>
     {% for post in posts %}
       {% include 'posts/posts_view.html' %}
+      <a class="btn btn-primary" style="background-color: seagreen"
+        href="{% url 'posts:post_detail' post.id %}">
+        Подробная информация</a>
       {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
     {% include 'posts/includes/paginator.html' %}

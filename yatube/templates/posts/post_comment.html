@@ -38,7 +38,7 @@
       <form method="post" action="{% url 'posts:add_comment' post.id %}">
         {% csrf_token %}
         {% for field in form %}
-        <div class="form-group mb-2">
+        <div class="form-group row my-3">
             <label for="{{ field.id_for_label }}">
               {{ field.label }}
               {% if field.required %}
@@ -51,7 +51,8 @@
             </small>
         </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary">Отправить</button>
+        <button type="submit" class="btn btn-primary" 
+        style="background-color: seagreen">Отправить</button>
       </form>
     </div>
   </div>

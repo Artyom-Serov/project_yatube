@@ -11,11 +11,11 @@
   {% for post in page_obj %}
     {% include 'posts/posts_view.html' %}
     {% if post.group.slug %}
-      <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы > </a>
+      <a href="{% url 'posts:group_list' post.group.slug %}">Все записи группы > </a>
     {% endif %}
     {% if user.is_authenticated and user == post.author %}
     <a class="btn btn-primary" href="{% url 'posts:post_edit' post_id=post.id %}">
-      редактировать запись
+      Редактировать запись
     </a>
     {% endif %}
     {% if not forloop.last %}<hr>{% endif %}
