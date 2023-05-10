@@ -164,40 +164,6 @@ def follow_index(request):
     return render(request, template, context)
 
 
-# ВАРИАНТ themasterid
-# @login_required
-# def profile_follow(request, username):
-#    author = get_object_or_404(User, username=username)
-#    if author != request.user:
-#        Follow.objects.get_or_create(user=request.user, author=author)
-#    return redirect('posts:profile', author)
-# @login_required
-# def profile_unfollow(request, username):
-#    user_follower = get_object_or_404(
-#        Follow,
-#        user=request.user,
-#        author__username=username
-#    )
-#    user_follower.delete()
-#    return redirect('posts:profile', username=username)
-# ВАРИАНТ СЕТИ
-# @login_required
-# def profile_follow(request, username):
-#    # Подписаться на автора
-#    # Находим пользователя, на которого хотим подписаться
-#    author = get_object_or_404(User, username=username)
-#    # Создаем запись Follow
-#    Follow.objects.get_or_create(user=request.user, author=author)
-#    return redirect('posts:profile', username=username)
-# @login_required
-# def profile_unfollow(request, username):
-#    # Дизлайк, отписка
-#    # Находим пользователя, на которого хотим подписаться
-#    author = get_object_or_404(User, username=username)
-#    # Создаем запись Follow
-#    Follow.objects.get_or_create(user=request.user, author=author)
-#    return redirect('posts:profile', username=username)
-# ВАРИАНТ РУДЕНКО со stackoverflow
 @login_required
 def profile_follow(request, username):
     # Подписаться на автора
