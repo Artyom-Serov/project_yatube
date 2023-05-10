@@ -5,10 +5,8 @@
 {% endblock title %}
 
 {% block content %}
-<div class="container py-1">
+<div class="container py-3">
   {% include 'posts/includes/switcher.html' with index=True %}
-</div>
-<div class="container py-5">
   <h1>Последние обновления на сайте</h1>
   {% for post in page_obj %}
     {% include 'posts/posts_view.html' %}
@@ -31,4 +29,3 @@
   {% include 'posts/includes/paginator.html' %}
 </div>
 {% endblock %}
-{% include 'includes/footer.html' %}

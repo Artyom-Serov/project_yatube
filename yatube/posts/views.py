@@ -57,8 +57,6 @@ def group_posts(request, slug):
     context = {
         'group': group,
         'posts': page_obj,
-        'page_obj': page_obj,
-        'paginator': paginator,
     }
     return render(request, template, context)
 
@@ -66,7 +64,7 @@ def group_posts(request, slug):
 def profile(request, username):
     # функция отображения деталей профайла
     author = get_object_or_404(User, username=username)
-    post_list = author.post_set.all().order_by('-created')
+    post_list = author.post_set.all()
     page_number = request.GET.get('page')
     # Подключаем функцию паджинации
     paginator, page_obj = get_paginator(
@@ -80,8 +78,8 @@ def profile(request, username):
     template = 'posts/profile.html'
     context = {
         'author': author,
-        'post_list': post_list,
         'page_obj': page_obj,
+        'following': following
     }
     return render(request, template, context)
 
@@ -159,33 +157,30 @@ def follow_index(request):
     # на которых подписан пользователь
     posts = Post.objects.filter(
         author__following__user=request.user)
-    page_obj = get_paginator(posts, settings.DISPLAY, request)
+    page_number = request.GET.get('page')
+    paginator, page_obj = get_paginator(posts, settings.DISPLAY, page_number)
+    template = 'posts/follow.html'
     context = {'page_obj': page_obj}
-    return render(request, 'posts/follow.html', context)
+    return render(request, template, context)
 
 
 # ВАРИАНТ themasterid
-@login_required
-def profile_follow(request, username):
-    author = get_object_or_404(User, username=username)
-    if author != request.user:
-        Follow.objects.get_or_create(user=request.user, author=author)
-    return redirect('posts:profile', author)
-
-
-@login_required
-def profile_unfollow(request, username):
-    user_follower = get_object_or_404(
-        Follow,
-        user=request.user,
-        author__username=username
-    )
-    user_follower.delete()
-    return redirect('posts:profile', username)
-
-
+# @login_required
+# def profile_follow(request, username):
+#    author = get_object_or_404(User, username=username)
+#    if author != request.user:
+#        Follow.objects.get_or_create(user=request.user, author=author)
+#    return redirect('posts:profile', author)
+# @login_required
+# def profile_unfollow(request, username):
+#    user_follower = get_object_or_404(
+#        Follow,
+#        user=request.user,
+#        author__username=username
+#    )
+#    user_follower.delete()
+#    return redirect('posts:profile', username=username)
 # ВАРИАНТ СЕТИ
-
 # @login_required
 # def profile_follow(request, username):
 #    # Подписаться на автора
@@ -194,7 +189,6 @@ def profile_unfollow(request, username):
 #    # Создаем запись Follow
 #    Follow.objects.get_or_create(user=request.user, author=author)
 #    return redirect('posts:profile', username=username)
-
 # @login_required
 # def profile_unfollow(request, username):
 #    # Дизлайк, отписка
@@ -203,33 +197,31 @@ def profile_unfollow(request, username):
 #    # Создаем запись Follow
 #    Follow.objects.get_or_create(user=request.user, author=author)
 #    return redirect('posts:profile', username=username)
-
-
 # ВАРИАНТ РУДЕНКО со stackoverflow
+@login_required
+def profile_follow(request, username):
+    # Подписаться на автора
+    author = get_object_or_404(User, username=username)
+    if author != request.user:
+        Follow.objects.create(
+            user=request.user,
+            author=author,
+        )
+    return redirect(
+        'posts:profile',
+        author.username
+    )
 
-# @login_required
-# def profile_follow(request, username):
-#    # Подписаться на автора
-#    author = get_object_or_404(User, username=username)
-#    if author != request.user:
-#        Follow.objects.create(
-#            user=request.user,
-#            author=author,
-#        )
-#    return redirect(
-#        'posts:profile',
-#        author.username
-#    )
 
-# @login_required
-# def profile_unfollow(request, username):
-#    # Отписаться
-#    author = get_object_or_404(User, username=username)
-#    Follow.objects.filter(
-#        user=request.user,
-#        author=author,
-#    ).delete()
-#    return redirect(
-#        'posts:profile',
-#        author.username
-#    )
+@login_required
+def profile_unfollow(request, username):
+    # Отписаться
+    author = get_object_or_404(User, username=username)
+    Follow.objects.filter(
+        user=request.user,
+        author=author,
+    ).delete()
+    return redirect(
+        'posts:profile',
+        author.username
+    )
