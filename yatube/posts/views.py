@@ -3,7 +3,6 @@ from django.core.paginator import Paginator
 from django.core.cache import cache
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-# Импортируем модель, чтобы обратиться к ней
 from .models import Post, Group, User, Follow
 from .forms import PostForm, CommentForm
 

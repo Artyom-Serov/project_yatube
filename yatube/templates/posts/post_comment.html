@@ -18,17 +18,26 @@
     <div class="media-body">
       <h5 class="mt-0">
         <a href="{% url 'posts:profile' comment.author.username %}">
-          {{ comment.author.username }}
+          {{ comment.author.get_full_name }}
         </a>
       </h5>
       <small>
-        {{ comment.created }}
+        {{ comment.created|date:'d E Y' }}
       </small>
       <p>
-        {{ comment.text }}
+        {{ comment.text|linebreaks }}
       </p>
     </div>
   </div>
+  {% empty %}
+  <hr>
+  <figure>
+    <blockquote class="blockquote">
+      <div class="shadow-sm p-2 bg-white rounded">
+        Эту публикацию пока никто не комментировал, будь первым! 
+      </div>
+    </blockquote>
+  </figure>
 {% endfor %}
 
 {% if user.is_authenticated %}
