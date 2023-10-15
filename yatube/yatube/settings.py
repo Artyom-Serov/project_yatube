@@ -151,6 +151,8 @@ LOGIN_REDIRECT_URL = 'posts:index'
 # Количество отображаемых постов
 DISPLAY = 10
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 #  подключаем движок filebased.EmailBackend
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 
