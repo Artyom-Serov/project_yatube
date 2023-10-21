@@ -26,12 +26,7 @@ SECRET_KEY = '+@ds-bpfel+s!rasyca2u$-=_sc+87g%*_3uqcex8v&)sz35l6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '[::1]',
-    'testserver',
-]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -153,10 +148,8 @@ DISPLAY = 10
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#  подключаем движок filebased.EmailBackend
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 
-# указываем директорию, в которую будут складываться файлы писем
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
 PASSWORD_RESET_EMAIL_TEMPLATE = 'users/password_reset_email.html'

@@ -27,8 +27,14 @@ class PasswordChangeDoneView(TemplateView):
 
 
 class PasswordReset(PasswordResetView):
+    # Указываем шаблон для email
+    email_template_name = 'users/password_reset_email.html'
     success_url = reverse_lazy('users:password_reset_done')
     template_name = 'users/password_reset_form.html'
+    # Отключаем отправку email
+    html_email_template_name = None
+    # Отключаем отправку email
+    from_email = None
 
 
 class PasswordResetDoneView(TemplateView):
